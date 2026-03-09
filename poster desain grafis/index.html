@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Desain Poster</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #07152b, #0b1d3a, #1d1147);
+      color: white;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .hero {
+      padding: 60px 0 30px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(96, 165, 250, 0.15);
+      color: #93c5fd;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: auto;
+      color: #cbd5e1;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 25px;
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(90deg, #60a5fa, #8b5cf6);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    .gallery-section {
+      padding: 30px 0 70px;
+    }
+
+    .section-title {
+      font-size: 30px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: rgba(9, 18, 40, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      transition: 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 18px 35px rgba(0,0,0,0.35);
+    }
+
+    .card img {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      display: block;
+      cursor: pointer;
+    }
+
+    .card-content {
+      padding: 18px;
+    }
+
+    .card-content h3 {
+      font-size: 21px;
+      margin-bottom: 10px;
+    }
+
+    .card-content p {
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
+
+    .view-btn {
+      border: none;
+      background: linear-gradient(90deg, #60a5fa, #8b5cf6);
+      color: white;
+      padding: 11px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .view-btn:hover {
+      transform: scale(1.04);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 999;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      position: relative;
+      background: #0f172a;
+      border-radius: 18px;
+      padding: 20px;
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .modal-content img {
+      max-width: 100%;
+      max-height: 75vh;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .modal-content h3 {
+      font-size: 24px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 42px;
+      height: 42px;
+      border: none;
+      border-radius: 50%;
+      background: #ef4444;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .card img {
+        height: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="badge">Design Portfolio</div>
+      <h1>Desain Poster Grafis</h1>
+      <p>
+        Kumpulan hasil desain poster yang saya buat dengan fokus pada tata letak,
+        pemilihan warna, tipografi, dan penyampaian visual yang menarik.
+      </p>
+      <a href="../index.html" class="back-btn">← Kembali ke Portfolio</a>
+    </section>
+
+    <section class="gallery-section">
+      <h2 class="section-title">Galeri Karya</h2>
+
+      <div class="gallery">
+        <div class="card">
+          <img src="CREATIVE DESIGN (1).png" alt="Creative Design 1" onclick="openModal(this.src, 'Creative Design 1')" />
+          <div class="card-content">
+            <h3>Creative Design 1</h3>
+            <p>Desain poster modern dengan tampilan visual yang kuat dan komposisi yang rapi.</p>
+            <button class="view-btn" onclick="openModal('CREATIVE DESIGN (1).png', 'Creative Design 1')">Lihat Detail</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="CREATIVE DESIGN.png" alt="Creative Design" onclick="openModal(this.src, 'Creative Design')" />
+          <div class="card-content">
+            <h3>Creative Design</h3>
+            <p>Poster dengan perpaduan warna menarik dan fokus utama pada informasi visual.</p>
+            <button class="view-btn" onclick="openModal('CREATIVE DESIGN.png', 'Creative Design')">Lihat Detail</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="Green and Yellow Illustration E-sport Tournament Poster.png" alt="E-sport Tournament Poster" onclick="openModal(this.src, 'E-sport Tournament Poster')" />
+          <div class="card-content">
+            <h3>E-sport Tournament</h3>
+            <p>Poster event dengan nuansa energik, ilustratif, dan menonjolkan suasana kompetitif.</p>
+            <button class="view-btn" onclick="openModal('Green and Yellow Illustration E-sport Tournament Poster.png', 'E-sport Tournament Poster')">Lihat Detail</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="UTS_DIMAS_Logo Toko Buku.png" alt="Desain Logo" onclick="openModal(this.src, 'Desain Logo')" />
+          <div class="card-content">
+            <h3>Desain Logo</h3>
+            <p>Hasil desain logo dengan pendekatan identitas visual yang sederhana dan kuat.</p>
+            <button class="view-btn" onclick="openModal('UTS_DIMAS_Logo Toko Buku.png', 'Desain Logo')">Lihat Detail</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="imageModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <img id="modalImage" src="" alt="Preview" />
+      <h3 id="modalTitle"></h3>
+    </div>
+  </div>
+
+  <script>
+    function openModal(imageSrc, title) {
+      document.getElementById("modalImage").src = imageSrc;
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("imageModal").classList.add("show");
+    }
+
+    function closeModal() {
+      document.getElementById("imageModal").classList.remove("show");
+    }
+
+    document.getElementById("imageModal").addEventListener("click", function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

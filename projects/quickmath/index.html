@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickMath!</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --correct: #10b981;
+            --wrong: #ef4444;
+            --text: #1f2937;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Card Style */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        #progress {
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            transition: width 1s linear;
+        }
+
+        .question {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--text);
+        }
+
+        input[type="number"] {
+            width: 120px;
+            padding: 12px;
+            font-size: 1.5rem;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        /* Table Style */
+        .result-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .row-correct {
+            color: var(--correct);
+            font-weight: bold;
+        }
+
+        .row-wrong {
+            color: var(--wrong);
+            font-weight: bold;
+        }
+
+        /* Animations for Game */
+        .shake {
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-10px);
+            }
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .score-badge {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="game-card">
+        <div id="start-screen">
+            <h1>QuickMath!</h1>
+            <p>
+                Jawab 10 soal secepat mungkin.<br />Waktu tiap soal hanya 10 detik!
+            </p>
+            <button onclick="startGame()">Mulai Bermain</button>
+        </div>
+
+        <div id="play-screen" class="hidden">
+            <div id="quest-number">Soal 1 / 10</div>
+            <div class="timer-bar"><div id="progress"></div></div>
+            <div class="question" id="display-question">0 + 0</div>
+            <input
+                type="number"
+                id="answer-input"
+                placeholder="?"
+                autocomplete="off"
+            >
+            <br />
+            <small>Tekan Enter untuk jawab</small>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h1>Selesai!</h1>
+            <div class="score-badge" id="final-score">Skor: 0</div>
+            <div class="result-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Soal</th>
+                            <th>Input</th>
+                            <th>Benar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-body"></tbody>
+                </table>
+            </div>
+            <button onclick="startGame()">Main Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 10;
+        let timerInterval;
+        let gameData = [];
+        let currentAnswer = 0;
+
+        const startScreen = document.getElementById("start-screen");
+        const playScreen = document.getElementById("play-screen");
+        const resultScreen = document.getElementById("result-screen");
+        const inputField = document.getElementById("answer-input");
+        const progress = document.getElementById("progress");
+
+        function startGame() {
+            currentQuestion = 0;
+            score = 0;
+            gameData = [];
+            startScreen.classList.add("hidden");
+            resultScreen.classList.add("hidden");
+            playScreen.classList.remove("hidden");
+            nextQuestion();
+        }
+
+        function generateQuestion() {
+            const ops = ["+", "-", "*", "/"];
+            let a = Math.floor(Math.random() * 10);
+            let b = Math.floor(Math.random() * 10);
+            let op = ops[Math.floor(Math.random() * 4)];
+
+            // Validasi pembagian agar tidak desimal dan tidak bagi nol
+            if (op === "/") {
+                if (b === 0) b = 1;
+                a = a * b; // Menjamin hasil (a/b) adalah b awal (integer)
+            }
+            let qText = a + " " + op + " " + b;
+            let ans = 0;
+            if (op == "+") ans = a + b;
+            if (op == "-") ans = a - b;
+            if (op == "*") ans = a * b;
+            if (op == "/") ans = a / b;
+
+            return { qText, ans };
+        }
+
+        function nextQuestion() {
+            if (currentQuestion >= 10) {
+                endGame();
+                return;
+            }
+
+            currentQuestion++;
+            document.getElementById("quest-number").innerText = 'Soal ' + currentQuestion + ' / 10';
+            const q = generateQuestion();
+            document.getElementById("display-question").innerText = q.qText;
+            currentAnswer = q.ans;
+
+            inputField.value = "";
+            inputField.focus();
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 10;
+            progress.style.width = "100%";
+            progress.style.transition = "none";
+
+            // Force reflow
+            progress.offsetHeight;
+
+            progress.style.transition = "width 10s linear";
+            progress.style.width = "0%";
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft < 0) {
+                    processAnswer(null); // Waktu habis
+                }
+            }, 1000);
+        }
+
+        function processAnswer(userValue) {
+            clearInterval(timerInterval);
+            const isCorrect = userValue !== null && parseFloat(userValue) === currentAnswer;
+
+            gameData.push({
+                question: document.getElementById("display-question").innerText,
+                userAnswer: userValue !== null ? userValue : "-",
+                correctAnswer: currentAnswer,
+                isCorrect: isCorrect
+            });
+
+            if (isCorrect) {
+                score++;
+            }
+
+            if (currentQuestion < 10) {
+                nextQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            playScreen.classList.add("hidden");
+            resultScreen.classList.remove("hidden");
+
+            document.getElementById("final-score").innerText = "Skor: " + score + " / 10";
+
+            const resultBody = document.getElementById("result-body");
+            resultBody.innerHTML = "";
+
+            gameData.forEach((data, index) => {
+                const row = document.createElement("tr");
+                const rowClass = data.isCorrect ? "row-correct" : "row-wrong";
+                row.innerHTML = `
+                    <td>${index + 1}. ${data.question}</td>
+                    <td>${data.userAnswer}</td>
+                    <td class="${rowClass}">${data.correctAnswer}</td>
+                `;
+                resultBody.appendChild(row);
+            });
+        }
+
+        // Event listener untuk tombol Enter
+        inputField.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                processAnswer(inputField.value);
+            }
+        });
+    </script>
+</body>
+</html>
